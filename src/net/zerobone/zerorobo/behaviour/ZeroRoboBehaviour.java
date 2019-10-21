@@ -15,10 +15,10 @@ public class ZeroRoboBehaviour extends SimpleRobotBehavior {
     protected void start() {
 
         Color bodyColor = new Color(255, 35, 33);
-        Color gunColor = new Color(132,132,132);
-        Color radarColor = new Color(213,213,213);
-        Color bulletColor = new Color(231,231,231);
-        Color scanArcColor = new Color(111,111,111);
+        Color gunColor = new Color(136, 208, 255);
+        Color radarColor = new Color(129, 44, 213);
+        Color bulletColor = new Color(231, 96, 0);
+        Color scanArcColor = new Color(57, 0,111);
 
         setColors(bodyColor, gunColor, radarColor, bulletColor, scanArcColor);
 
@@ -27,7 +27,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehavior {
     @Override
     protected void execute() {
 
-        ahead(5);
+        // ahead(5);
 
     }
 
