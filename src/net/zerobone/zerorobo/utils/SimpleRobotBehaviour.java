@@ -16,11 +16,11 @@ import java.util.stream.Stream;
  * implement an actual behavior. All actions will be queued up and executed when
  * the method returns.
  */
-public abstract class SimpleRobotBehavior {
+public abstract class SimpleRobotBehaviour {
 
     private SimpleRobot robot;
 
-    public SimpleRobotBehavior(SimpleRobot robot) {
+    public SimpleRobotBehaviour(SimpleRobot robot) {
         this.robot = robot;
     }
 

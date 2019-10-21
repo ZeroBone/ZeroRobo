@@ -2,7 +2,7 @@ package net.zerobone.zerorobo.utils;
 
 /**
  * A net.zerobone.zerorobo.utils.HitByBulletEvent is sent to
- * {@link SimpleRobotBehavior#getHitByBulletEvents()} when your robot has been
+ * {@link SimpleRobotBehaviour#getHitByBulletEvents()} when your robot has been
  * hit by a bullet. You can use the information contained in this event to
  * determine what to do.
  *

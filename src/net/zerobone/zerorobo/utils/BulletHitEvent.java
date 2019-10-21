@@ -1,7 +1,7 @@
 package net.zerobone.zerorobo.utils;
 
 /**
- * This event is returned by {@link SimpleRobotBehavior#getBulletHitEvents()}
+ * This event is returned by {@link SimpleRobotBehaviour#getBulletHitEvents()}
  * when one of your bullets has hit another robot.
  *
  * @author Mathew A. Nelson (original)

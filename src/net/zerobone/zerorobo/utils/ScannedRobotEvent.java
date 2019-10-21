@@ -2,7 +2,7 @@ package net.zerobone.zerorobo.utils;
 
 /**
  * A net.zerobone.zerorobo.utils.ScannedRobotEvent is sent to
- * {@link SimpleRobotBehavior#getScannedRobotEvents()} when you scan a robot.
+ * {@link SimpleRobotBehaviour#getScannedRobotEvents()} when you scan a robot.
  * You can use the information contained in this event to determine what to do.
  *
  * @author Mathew A. Nelson (original)

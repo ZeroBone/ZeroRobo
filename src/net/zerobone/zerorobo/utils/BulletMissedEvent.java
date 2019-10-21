@@ -1,7 +1,7 @@
 package net.zerobone.zerorobo.utils;
 
 /**
- * This event is sent to {@link SimpleRobotBehavior#getBulletMissedEvents()}
+ * This event is sent to {@link SimpleRobotBehaviour#getBulletMissedEvents()}
  * when one of your bullets has missed, i.e. when the bullet has reached the
  * border of the battlefield.
  *

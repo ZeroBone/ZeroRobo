@@ -1,7 +1,7 @@
 package net.zerobone.zerorobo.utils;
 
 /**
- * A net.zerobone.zerorobo.utils.HitWallEvent is sent to {@link SimpleRobotBehavior#getHitWallEvents()}
+ * A net.zerobone.zerorobo.utils.HitWallEvent is sent to {@link SimpleRobotBehaviour#getHitWallEvents()}
  * when you collide a wall.
  * You can use the information contained in this event to determine what to do.
  *

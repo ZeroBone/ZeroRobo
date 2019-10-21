@@ -1,7 +1,7 @@
 package net.zerobone.zerorobo.utils;
 
 /**
- * A net.zerobone.zerorobo.utils.HitRobotEvent is sent to {@link SimpleRobotBehavior#getHitRobotEvents()}
+ * A net.zerobone.zerorobo.utils.HitRobotEvent is sent to {@link SimpleRobotBehaviour#getHitRobotEvents()}
  * when your robot collides with another robot.
  * You can use the information contained in this event to determine what to do.
  *

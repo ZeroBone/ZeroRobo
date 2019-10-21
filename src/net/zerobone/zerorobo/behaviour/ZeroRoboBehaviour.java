@@ -1,11 +1,11 @@
 package net.zerobone.zerorobo.behaviour;
 
 import net.zerobone.zerorobo.ZeroRobo;
-import net.zerobone.zerorobo.utils.SimpleRobotBehavior;
+import net.zerobone.zerorobo.utils.SimpleRobotBehaviour;
 
 import java.awt.*;
 
-public class ZeroRoboBehaviour extends SimpleRobotBehavior {
+public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     public ZeroRoboBehaviour(ZeroRobo robo) {
         super(robo);

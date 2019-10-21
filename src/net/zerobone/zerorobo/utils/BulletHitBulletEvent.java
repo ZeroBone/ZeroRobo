@@ -1,7 +1,7 @@
 package net.zerobone.zerorobo.utils;
 
 /**
- * This event is sent to {@link SimpleRobotBehavior#getBulletHitBulletEvents()}.
+ * This event is sent to {@link SimpleRobotBehaviour#getBulletHitBulletEvents()}.
  * when one of your bullets has hit another bullet.
  *
  * @author Mathew A. Nelson (original)

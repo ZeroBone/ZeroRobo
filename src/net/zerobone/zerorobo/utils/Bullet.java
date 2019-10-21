@@ -2,10 +2,10 @@ package net.zerobone.zerorobo.utils;
 
 /**
  * Represents a bullet. This is returned from
- * {@link SimpleRobotBehavior#fireBullet(double)} and all the bullet-related
+ * {@link SimpleRobotBehaviour#fireBullet(double)} and all the bullet-related
  * events.
  *
- * @see SimpleRobotBehavior#fireBullet(double)
+ * @see SimpleRobotBehaviour#fireBullet(double)
  * @see BulletHitEvent
  * @see BulletMissedEvent
  * @see BulletHitBulletEvent
