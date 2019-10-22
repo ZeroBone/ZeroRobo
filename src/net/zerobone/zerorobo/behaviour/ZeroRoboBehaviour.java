@@ -44,12 +44,15 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
             lostEnemyCounter++;
 
-            if (lostEnemyCounter > 10) {
-                turnRadar(radarGoingRight ? 10 : -10);
+            if (lostEnemyCounter >= 10) {
+                turnRadar(radarGoingRight ? 1000 : -1000);
             }
-            else if (lostEnemyCounter > 2) {
+            else if (lostEnemyCounter >= 6) {
+                turnRadar(radarGoingRight ? -4 : 4);
+            }
+            else if (lostEnemyCounter >= 2) {
                 // try looking slowly for the enemy in the opposite direction
-                turnRadar(radarGoingRight ? -2 : 2);
+                turnRadar(radarGoingRight ? 2 : -2);
             }
 
             return;
@@ -93,7 +96,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         double radarHeading = getRadarHeading();
 
-        double turnDegree = optimalTurnDirection(radarHeading, enemyHeading, 5 / event.getDistance());
+        double turnDegree = optimalTurnDirection(radarHeading, enemyHeading, 3000 / event.getDistance());
 
         System.out.println(turnDegree);
 
