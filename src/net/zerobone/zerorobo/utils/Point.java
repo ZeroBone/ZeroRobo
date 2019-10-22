@@ -12,7 +12,7 @@ package net.zerobone.zerorobo.utils;
  * @author Billy Joe Franks (adaptation)
  * @author Julian "Jules" Stieß (adaptation)
  */
-class Point {
+public class Point {
 
     /**
      * The x coordinate of the vector. Guaranteed to be finite.

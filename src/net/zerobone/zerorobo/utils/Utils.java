@@ -26,7 +26,7 @@ public class Utils {
      * @param angle the angle to normalize
      * @return the normalized angle that will be in the range of [0,360[
      */
-    static double normalAbsoluteAngle(double angle) {
+    public static double normalAbsoluteAngle(double angle) {
         return (angle %= 360) >= 0 ? angle : (angle + 360);
     }
 
@@ -38,7 +38,7 @@ public class Utils {
      * @param angle the angle to normalize
      * @return the normalized angle that will be in the range of [-180,180[
      */
-    static double normalRelativeAngle(double angle) {
+    public static double normalRelativeAngle(double angle) {
         return (angle %= 360) >= 0 ? (angle < 180) ? angle : angle - 360 : (angle >= -180) ? angle : angle + 360;
     }
 
@@ -56,7 +56,7 @@ public class Utils {
      * @see #normalAbsoluteAngle(double)
      * @see #isNear(double, double)
      */
-    static double normalNearAbsoluteAngle(double angle) {
+    public static double normalNearAbsoluteAngle(double angle) {
         angle = (angle %= 360) >= 0 ? angle : (angle + 360);
 
         if (isNear(angle, 180)) {
@@ -92,7 +92,7 @@ public class Utils {
      * @return {@code true} if the two doubles are near to each other;
      *         {@code false} otherwise.
      */
-    static boolean isNear(double value1, double value2) {
+    public static boolean isNear(double value1, double value2) {
         return (Math.abs(value1 - value2) < NEAR_DELTA);
     }
 
@@ -109,7 +109,7 @@ public class Utils {
      * @param val an angle, in degrees.
      * @return the sine of the argument.
      */
-    static double sin(double val) {
+    public static double sin(double val) {
         return Math.sin(Math.toRadians(val));
     }
 
@@ -124,7 +124,7 @@ public class Utils {
      * @param val an angle, in degrees.
      * @return the cosine of the argument.
      */
-    static double cos(double val) {
+    public static double cos(double val) {
         return Math.cos(Math.toRadians(val));
     }
 
@@ -141,7 +141,7 @@ public class Utils {
      * @param val an angle, in degrees.
      * @return the tangent of the argument.
      */
-    static double tan(double val) {
+    public static double tan(double val) {
         return Math.tan(Math.toRadians(val));
     }
 
@@ -159,7 +159,7 @@ public class Utils {
      * @param val the value whose arc sine is to be returned.
      * @return the arc sine of the argument.
      */
-    static double asin(double val) {
+    public static double asin(double val) {
         return Math.toDegrees(Math.asin(val));
     }
 
@@ -175,7 +175,7 @@ public class Utils {
      * @param val the value whose arc cosine is to be returned.
      * @return the arc cosine of the argument.
      */
-    static double acos(double val) {
+    public static double acos(double val) {
         return Math.toDegrees(Math.acos(val));
     }
 
@@ -192,7 +192,7 @@ public class Utils {
      * @param val the value whose arc tangent is to be returned.
      * @return the arc tangent of the argument.
      */
-    static double atan(double val) {
+    public static double atan(double val) {
         return Math.toDegrees(Math.atan(val));
     }
 
@@ -240,7 +240,7 @@ public class Utils {
      *          in polar coordinates that corresponds to the point
      *          (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
      */
-    static double atan2(double y, double x) {
+    public static double atan2(double y, double x) {
         return Math.toDegrees(Math.atan2(y, x));
     }
 
@@ -253,7 +253,7 @@ public class Utils {
      * @param a the argument whose absolute value is to be determined
      * @return Returns the absolute value of a double value
      */
-    static double abs(double a) {
+    public static double abs(double a) {
         return Math.abs(a);
     }
 
@@ -263,7 +263,7 @@ public class Utils {
      * @param b an other argument
      * @return Returns the minium of the given two values
      */
-    static double min(double a, double b) {
+    public static double min(double a, double b) {
         return Math.min(a, b);
     }
 
@@ -274,7 +274,7 @@ public class Utils {
      * @param b an other argument
      * @return Returns the maximum of the given two values
      */
-    static double max(double a, double b) {
+    public static double max(double a, double b) {
         return Math.max(a, b);
     }
 
@@ -289,7 +289,7 @@ public class Utils {
      * @param d the double value whose signum is to be returned
      * @return the signum-function of the argument
      */
-    static double signum(double d) {
+    public static double signum(double d) {
         return Math.signum(d);
     }
 

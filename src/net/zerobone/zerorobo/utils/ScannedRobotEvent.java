@@ -8,7 +8,7 @@ package net.zerobone.zerorobo.utils;
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  */
-final class ScannedRobotEvent {
+public final class ScannedRobotEvent {
     private robocode.ScannedRobotEvent ev;
 
     /**
