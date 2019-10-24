@@ -87,6 +87,8 @@ public class TileBehaviour extends SimpleRobotBehaviour {
 
         double firePower = Math.min(500 / distance, 3);
 
+        // System.out.println(firePower + " " + distance);
+
         // calculate speed of bullet: 20 and 3 are from the robocode wiki
         double bulletSpeed = 20 - firePower * 3;
 

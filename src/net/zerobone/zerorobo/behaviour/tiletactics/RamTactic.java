@@ -6,7 +6,7 @@ import net.zerobone.zerorobo.utils.IntPoint;
 
 import java.util.ArrayList;
 
-public class CircleTactic extends TileTactic {
+public class RamTactic extends TileTactic {
 
     @Override
     public IntPoint getNextQuad(ArrayList<IntPoint> availableQuads, TileBehaviour context, IntPoint myQuad, IntPoint enemyQuad) {
@@ -15,15 +15,7 @@ public class CircleTactic extends TileTactic {
 
     @Override
     public boolean acceptAvailableQuad(TileBehaviour context, IntPoint quad, IntPoint myQuad, IntPoint enemyQuad) {
-
-        int diffX = enemyQuad.x - quad.x;
-        int diffY = enemyQuad.y - quad.y;
-
-        if (diffX < 0) diffX = -diffX;
-        if (diffY < 0) diffY = -diffY;
-
-        return diffX * diffX + diffY * diffY == 2;
-
+        return quad.equals(myQuad);
     }
 
 }
