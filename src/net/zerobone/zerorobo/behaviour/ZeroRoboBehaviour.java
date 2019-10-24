@@ -5,7 +5,8 @@ import net.zerobone.zerorobo.utils.*;
 import net.zerobone.zerorobo.utils.Point;
 
 import java.awt.*;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
@@ -46,18 +47,20 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         // double
 
-        turnRadar(10);
+        // turnRadar(10);
+        turnRadar(Double.POSITIVE_INFINITY);
 
         if (targetPosition != null) {
 
-            goTo(targetPosition.getX(), targetPosition.getY());
+            // goTo(targetPosition.getX(), targetPosition.getY());
+            go(targetPosition.getX(), targetPosition.getY());
 
             // System.out.println(targetPosition);
 
             // ahead(Double.POSITIVE_INFINITY);
         }
         else {
-            goTo(getBattleFieldWidth() / 2, getBattleFieldHeight() / 2);
+            // goTo(getBattleFieldWidth() / 2, getBattleFieldHeight() / 2);
         }
 
     }
@@ -86,15 +89,32 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         // System.out.println(myQuad + " " + enemyQuad);
 
-        /*if (myQuad.equals(enemyQuad)) {
+        if (!myQuad.equals(targetQuad) && targetQuad != null) {
             return;
-        }*/
+        }
 
-        Vector<IntPoint> nextQuads = nextQuad(myQuad, enemyQuad);
-        IntPoint nextQuad = nextQuads.isEmpty() ? new IntPoint(0, 0) : nextQuads.lastElement();
+        ArrayList<IntPoint> nextQuads = nextQuad(myQuad, enemyQuad);
 
-        if (nextQuad.equals(targetQuad)) {
-            nextQuad = nextQuads.firstElement();
+        IntPoint nextQuad;
+
+        if (!nextQuads.isEmpty())  {
+
+            for (int i = 0; i < nextQuads.size(); i++) {
+
+                if (nextQuads.get(i).equals(targetQuad)) {
+                    nextQuads.remove(i);
+                    break;
+                }
+
+            }
+
+        }
+
+        if (nextQuads.isEmpty()) {
+            nextQuad = new IntPoint(0, 0);
+        }
+        else {
+            nextQuad = nextQuads.get(new Random().nextInt(nextQuads.size()));
         }
 
         setTargetQuad(nextQuad);
@@ -107,7 +127,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         targetPosition = getCenterOfQuad(this.targetQuad);
 
-        System.out.println(targetPosition);
+        System.out.println(targetQuad);
 
     }
 
@@ -137,15 +157,6 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
     }
 
     private Point calculateEnemyPosition(ScannedRobotEvent event) {
-
-        // double angle = (event.getHeading() + event.getBearing()) % 360;
-        // double angle = Utils.normalAbsoluteAngle(event.getHeading() + event.getBearing());
-        // double angle = event.getHeading();
-
-        // System.out.println(angle);
-
-        /*return new Point(getX(), getY())
-            .add(Point.fromPolarCoordinates(angle, event.getDistance()));*/
 
         double angle = Math.toRadians((getHeading() + event.getBearing()) % 360);
 
@@ -180,9 +191,9 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     }
 
-    private Vector<IntPoint> nextQuad(IntPoint myQuad, IntPoint enemyQuad) {
+    private ArrayList<IntPoint> nextQuad(IntPoint myQuad, IntPoint enemyQuad) {
 
-        Vector<IntPoint> possibleQuads = new Vector<>();
+        ArrayList<IntPoint> possibleQuads = new ArrayList<>();
 
         IntPoint diff = myQuad.copy();
         diff.subtract(enemyQuad);
@@ -191,39 +202,51 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         {
             int x = myQuad.x - 1;
-            if (x < 0) x = myQuad.x;
+            if (x < 0) x = 0;
 
-            int y = myQuad.y - 1;
-            if (y < 0) y = myQuad.y;
+            int startY = myQuad.y - 1;
+            if (startY < 0) startY = 0;
 
             int maxX = myQuad.x + 1;
-            if (maxX > ZeroRoboBehaviour.quadLayout.x) maxX = ZeroRoboBehaviour.quadLayout.x;
+            if (maxX >= ZeroRoboBehaviour.quadLayout.x) maxX = ZeroRoboBehaviour.quadLayout.x - 1;
 
             int maxY = myQuad.y + 1;
-            if (maxY > ZeroRoboBehaviour.quadLayout.y) maxY = ZeroRoboBehaviour.quadLayout.y;
+            if (maxY >= ZeroRoboBehaviour.quadLayout.y) maxY = ZeroRoboBehaviour.quadLayout.y - 1;
+
+            // System.out.println("maxX = " + maxX + " maxY = " + maxY);
 
             for (; x <= maxX; x++) {
-                for (; y <= maxY; y++) {
+                for (int y = startY; y <= maxY; y++) {
 
-                    if (x == y) {
-                        continue;
-                    }
+                    // System.out.println("x = " + x + " y = " + y);
 
-                    int directionX = x - myQuad.x;
-                    int directionY = y - myQuad.y;
+                    // int directionX = x - myQuad.x;
+                    // int directionY = y - myQuad.y;
 
-                    if (intSignum(directionX) == intSignum(diff.x) && intSignum(directionY) == intSignum(diff.y)) {
+                    /*if (intSignum(directionX) == intSignum(diff.x) && intSignum(directionY) == intSignum(diff.y)) {
                         // we never go in the direction of the enemy
+                        continue;
+                    }*/
+
+                    IntPoint possibleTarget = new IntPoint(x, y);
+
+                    if (possibleTarget.equals(enemyQuad) || possibleTarget.equals(myQuad)) {
                         continue;
                     }
 
                     // System.out.println("Adding " + new IntPoint(x, y));
 
-                    possibleQuads.add(new IntPoint(x, y));
+                    possibleQuads.add(possibleTarget);
 
                 }
             }
 
+        }
+
+        System.out.println("nextQuad() ===================");
+
+        for (IntPoint element : possibleQuads) {
+            System.out.println(element);
         }
 
         // System.out.println(possibleQuads.size());
@@ -268,6 +291,33 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
         else {
             ahead(-distance);
         }
+    }
+
+    private void go(double x, double y) {
+        /* Calculate the difference bettwen the current position and the target position. */
+        x = x - getX();
+        y = y - getY();
+
+        double headingRadians = Math.toRadians(getHeading());
+
+        /* Calculate the angle relative to the current heading. */
+        double goAngle = Utils.normalRelativeAngle(Math.atan2(x, y) - headingRadians);
+
+        /*
+         * Apply a tangent to the turn this is a cheap way of achieving back to front turn angle as tangents period is PI.
+         * The output is very close to doing it correctly under most inputs. Applying the arctan will reverse the function
+         * back into a normal value, correcting the value. The arctan is not needed if code size is required, the error from
+         * tangent evening out over multiple turns.
+         */
+        turn(Math.toDegrees(Math.atan(Math.tan(goAngle))));
+
+        /*
+         * The cosine call reduces the amount moved more the more perpendicular it is to the desired angle of travel. The
+         * hypot is a quick way of calculating the distance to move as it calculates the length of the given coordinates
+         * from 0.
+         */
+        ahead(Math.cos(goAngle) * Math.hypot(x, y));
+
     }
 
 }
