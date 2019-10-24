@@ -13,7 +13,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
     private double futureX = 0;
     private double futureY = 0;
 
-    private static final IntPoint quadLayout = new IntPoint(5, 4);
+    private static final IntPoint quadLayout = new IntPoint(4, 3);
 
     private Point targetPosition = null;
     private IntPoint targetQuad = null;
