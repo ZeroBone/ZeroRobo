@@ -10,6 +10,9 @@ import java.util.Random;
 
 public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
+    private double futureX = 0;
+    private double futureY = 0;
+
     private static final IntPoint quadLayout = new IntPoint(3, 3);
 
     private Point targetPosition = null;
@@ -17,7 +20,13 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     private String trackingTankName = null;
 
-    private int lostEnemyCounter;
+    // enemy information
+    private Point enemyPosition;
+    private double enemyVelocity;
+    private double enemyHeading;
+    private double distanceToEnemy;
+
+    // private int lostEnemyCounter;
 
     public ZeroRoboBehaviour(ZeroRobo robo) {
         super(robo);
@@ -52,16 +61,51 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         if (targetPosition != null) {
 
-            // goTo(targetPosition.getX(), targetPosition.getY());
             go(targetPosition.getX(), targetPosition.getY());
 
-            // System.out.println(targetPosition);
+        }
 
-            // ahead(Double.POSITIVE_INFINITY);
+        if (trackingTankName != null) {
+            processShooting();
         }
-        else {
-            // goTo(getBattleFieldWidth() / 2, getBattleFieldHeight() / 2);
+
+    }
+
+    private void processShooting() {
+
+        double distance = enemyPosition.subtract(getX(), getY()).length();
+
+        double firePower = Math.min(500 / distance, 3);
+
+        // calculate speed of bullet: 20 and 3 are from the robocode wiki
+        double bulletSpeed = 20 - firePower * 3;
+
+        long time = (long)(distanceToEnemy / bulletSpeed);
+
+        futureX = getFutureX((int)enemyPosition.getX(), enemyHeading, enemyVelocity, time);
+        futureY = getFutureY((int)enemyPosition.getY(), enemyHeading, enemyVelocity, time);
+
+        double absoluteDegree = absoluteBearing(getX(), getY(), futureX, futureY);
+
+        turnGun(Utils.normalRelativeAngle(absoluteDegree - getGunHeading()));
+
+        if (getGunHeat() <= 1e-5 && Math.abs(getGunTurnRemaining()) < 10) {
+
+            fireBullet(firePower);
+
         }
+
+    }
+
+    private void updateShooting(ScannedRobotEvent event, Point newEnemyPosition) {
+
+        enemyPosition = newEnemyPosition;
+
+        enemyVelocity = event.getVelocity();
+
+        enemyHeading = event.getHeading();
+
+        distanceToEnemy = event.getDistance();
 
     }
 
@@ -78,14 +122,16 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
         }
 
         // we found the target, so reset the counter
-        lostEnemyCounter = 0;
+        // lostEnemyCounter = 0;
 
         // find the coordinates of the enemy
         Point myPosition = new Point(getX(), getY());
-        Point enemyPosition = calculateEnemyPosition(event);
+        Point newEnemyPosition = calculateEnemyPosition(event);
+
+        updateShooting(event, newEnemyPosition);
 
         IntPoint myQuad = getRobotQuad(myPosition);
-        IntPoint enemyQuad = getRobotQuad(enemyPosition);
+        IntPoint enemyQuad = getRobotQuad(newEnemyPosition);
 
         // System.out.println(myQuad + " " + enemyQuad);
 
@@ -153,6 +199,10 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
             }
         }
+
+        g.setColor(new Color(229, 0, 255, 0x80));
+
+        g.fillArc((int)futureX, (int)futureY, 15, 15, 0, 360);
 
     }
 
@@ -257,42 +307,6 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     }
 
-    private static boolean intSignum(int v) {
-        return v > 0;
-    }
-
-    private void goTo(double x, double y) {
-        /* Transform our coordinates into a vector */
-        x -= getX();
-        y -= getY();
-
-        /* Calculate the angle to the target position */
-        double angleToTarget = Math.atan2(x, y);
-
-        /* Calculate the turn required get there */
-        double targetAngle = Utils.normalRelativeAngle(angleToTarget - Math.toRadians(getHeading()));
-
-        /*
-         * The Java Hypot method is a quick way of getting the length
-         * of a vector. Which in this case is also the distance between
-         * our robot and the target location.
-         */
-        double distance = Math.hypot(x, y);
-
-        /* This is a simple method of performing set front as back */
-        double turnAngle = Math.atan(Math.tan(targetAngle));
-
-        turn(Math.toDegrees(turnAngle));
-        // setTurnRightRadians(turnAngle);
-
-        if(targetAngle == turnAngle) {
-            ahead(distance);
-        }
-        else {
-            ahead(-distance);
-        }
-    }
-
     private void go(double x, double y) {
         /* Calculate the difference bettwen the current position and the target position. */
         x = x - getX();
@@ -317,6 +331,40 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
          * from 0.
          */
         ahead(Math.cos(goAngle) * Math.hypot(x, y));
+
+    }
+
+    private static double getFutureX(int x, double heading, double velocity, long time) {
+        return x + Math.sin(Math.toRadians(heading)) * velocity * time;
+    }
+
+    private static double getFutureY(int y, double heading, double velocity, long time) {
+        return y + Math.cos(Math.toRadians(heading)) * velocity * time;
+    }
+
+    // computes the absolute bearing between two points
+    private static double absoluteBearing(double x1, double y1, double x2, double y2) {
+
+        double xo = x2-x1;
+        double yo = y2-y1;
+
+        // double hyp = Point2D.distance(x1, y1, x2, y2);
+        double hyp = Math.hypot(Math.abs(x1 - x2), Math.abs(y1 - y2));
+
+        double arcSin = Math.toDegrees(Math.asin(xo / hyp));
+        double bearing = 0;
+
+        if (xo > 0 && yo > 0) { // both pos: lower-Left
+            bearing = arcSin;
+        } else if (xo < 0 && yo > 0) { // x neg, y pos: lower-right
+            bearing = 360 + arcSin; // arcsin is negative here, actually 360 - ang
+        } else if (xo > 0 && yo < 0) { // x pos, y neg: upper-left
+            bearing = 180 - arcSin;
+        } else if (xo < 0 && yo < 0) { // both neg: upper-right
+            bearing = 180 - arcSin; // arcsin is negative here, actually 180 + ang
+        }
+
+        return bearing;
 
     }
 
