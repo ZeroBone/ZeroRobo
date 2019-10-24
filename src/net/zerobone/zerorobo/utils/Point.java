@@ -51,7 +51,8 @@ public class Point {
      * @return       The position vector for the given polar coordinates.
      */
     public static Point fromPolarCoordinates(double phi, double length) {
-        return new Point(Math.sin(Math.toRadians(phi)) * length, Math.cos(Math.toRadians(phi)) * length);
+        phi = Math.toRadians(phi);
+        return new Point(Math.sin(phi) * length, Math.cos(phi) * length);
     }
 
     /**
