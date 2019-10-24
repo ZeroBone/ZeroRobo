@@ -86,6 +86,7 @@ public class TileBehaviour extends SimpleRobotBehaviour {
         double distance = enemyPosition.subtract(getX(), getY()).length();
 
         double firePower = Math.min(500 / distance, 3);
+        // double firePower = Math.min(0xff / distance, 3);
 
         // System.out.println(firePower + " " + distance);
 
@@ -308,14 +309,20 @@ public class TileBehaviour extends SimpleRobotBehaviour {
 
     private void go(double x, double y) {
 
-        // Calculate the difference bettwen the current position and the target position.
+        /*if ((getTime() / 13) % 2 == 0) {
+            ahead(0);
+            return;
+        }*/
+
+        // Calculate the difference bettwen the current position and the target position
         x = x - getX();
         y = y - getY();
 
         double headingRadians = Math.toRadians(getHeading());
 
         /* Calculate the angle relative to the current heading. */
-        double goAngle = Utils.normalRelativeAngle(Math.atan2(x, y) - headingRadians);
+        double goAngle = Utils.normalRelativeAngle(Math.toDegrees(Math.atan2(x, y) - headingRadians));
+        goAngle = Math.toRadians(goAngle);
 
         /*
          * Apply a tangent to the turn this is a cheap way of achieving back to front turn angle as tangents period is PI.
