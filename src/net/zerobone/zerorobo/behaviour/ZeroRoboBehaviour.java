@@ -10,6 +10,8 @@ import java.util.Random;
 
 public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
+    private int scanDirection = 1;
+
     private double futureX = 0;
     private double futureY = 0;
 
@@ -26,7 +28,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
     private double enemyHeading;
     private double distanceToEnemy;
 
-    // private int lostEnemyCounter;
+    private int lostEnemyCounter;
 
     public ZeroRoboBehaviour(ZeroRobo robo) {
         super(robo);
@@ -45,6 +47,8 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         setColors(bodyColor, gunColor, radarColor, bulletColor, scanArcColor);
 
+        turnRadar(720);
+
     }
 
     @Override
@@ -57,7 +61,13 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
         // double
 
         // turnRadar(10);
-        turnRadar(Double.POSITIVE_INFINITY);
+
+        lostEnemyCounter++;
+
+        if (lostEnemyCounter > 200) {
+            turnRadar(Double.POSITIVE_INFINITY);
+            lostEnemyCounter = 0;
+        }
 
         if (targetPosition != null) {
 
@@ -109,6 +119,22 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     }
 
+    private void updateRadar(ScannedRobotEvent event) {
+
+        // double turn = Utils.normalRelativeAngle(getHeading()) - getRadarHeading() + event.getBearing();
+
+        //turnRadar(turn);//+ Utils.signum(turn) * 20);
+
+        /*double turn = Utils.normalRelativeAngle(getHeading() - getRadarHeading() + event.getBearing());
+
+        turnRadar(turn);*/
+
+        double turn = Utils.normalRelativeAngle(getHeading() - getRadarHeading() + event.getBearing());
+
+        turnRadar(turn + Utils.signum(turn) * 20);
+
+    }
+
     private void onRobotScannedEvent(ScannedRobotEvent event) {
 
         if (trackingTankName != null && !trackingTankName.equals(event.getName())) {
@@ -122,7 +148,9 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
         }
 
         // we found the target, so reset the counter
-        // lostEnemyCounter = 0;
+        lostEnemyCounter = 0;
+
+        updateRadar(event);
 
         // find the coordinates of the enemy
         Point myPosition = new Point(getX(), getY());
