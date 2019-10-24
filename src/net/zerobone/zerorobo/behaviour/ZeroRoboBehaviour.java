@@ -13,7 +13,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
     private double futureX = 0;
     private double futureY = 0;
 
-    private static final IntPoint quadLayout = new IntPoint(3, 3);
+    private static final IntPoint quadLayout = new IntPoint(5, 4);
 
     private Point targetPosition = null;
     private IntPoint targetQuad = null;
@@ -173,7 +173,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         targetPosition = getCenterOfQuad(this.targetQuad);
 
-        System.out.println(targetQuad);
+        // System.out.println(targetQuad);
 
     }
 
@@ -268,23 +268,11 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
             for (; x <= maxX; x++) {
                 for (int y = startY; y <= maxY; y++) {
 
-                    // System.out.println("x = " + x + " y = " + y);
-
-                    // int directionX = x - myQuad.x;
-                    // int directionY = y - myQuad.y;
-
-                    /*if (intSignum(directionX) == intSignum(diff.x) && intSignum(directionY) == intSignum(diff.y)) {
-                        // we never go in the direction of the enemy
-                        continue;
-                    }*/
-
                     IntPoint possibleTarget = new IntPoint(x, y);
 
                     if (possibleTarget.equals(enemyQuad) || possibleTarget.equals(myQuad)) {
                         continue;
                     }
-
-                    // System.out.println("Adding " + new IntPoint(x, y));
 
                     possibleQuads.add(possibleTarget);
 
@@ -293,22 +281,13 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         }
 
-        System.out.println("nextQuad() ===================");
-
-        for (IntPoint element : possibleQuads) {
-            System.out.println(element);
-        }
-
-        // System.out.println(possibleQuads.size());
-
-        // return possibleQuads.elementAt(new Random().nextInt(possibleQuads.size()));
-        // return possibleQuads.lastElement();
         return possibleQuads;
 
     }
 
     private void go(double x, double y) {
-        /* Calculate the difference bettwen the current position and the target position. */
+
+        // Calculate the difference bettwen the current position and the target position.
         x = x - getX();
         y = y - getY();
 
