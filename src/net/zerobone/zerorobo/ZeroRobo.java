@@ -1,6 +1,7 @@
 package net.zerobone.zerorobo;
 
 import net.zerobone.zerorobo.behaviour.TileBehaviour;
+import net.zerobone.zerorobo.behaviour.tiletactics.CircleTactic;
 import net.zerobone.zerorobo.behaviour.tiletactics.RandomTactic;
 import net.zerobone.zerorobo.utils.SimpleRobot;
 
@@ -10,7 +11,8 @@ public class ZeroRobo extends SimpleRobot {
 
     public ZeroRobo() {
 
-        behaviour = new TileBehaviour(this, new RandomTactic());
+        // behaviour = new TileBehaviour(this, new RandomTactic());
+        behaviour = new TileBehaviour(this, new CircleTactic());
 
     }
 

@@ -8,6 +8,6 @@ public interface ITileTactic {
 
     public IntPoint getNextQuad(ArrayList<IntPoint> availableQuads, TileBehaviour context, IntPoint myQuad, IntPoint enemyQuad);
 
-    public boolean acceptAvailableQuad(TileBehaviour context, IntPoint quad);
+    public boolean acceptAvailableQuad(TileBehaviour context, IntPoint quad, IntPoint myQuad, IntPoint enemyQuad);
 
 }

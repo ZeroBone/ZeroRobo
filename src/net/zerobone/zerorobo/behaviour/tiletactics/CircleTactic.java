@@ -5,18 +5,27 @@ import net.zerobone.zerorobo.behaviour.TileTactic;
 import net.zerobone.zerorobo.utils.IntPoint;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class RandomTactic extends TileTactic {
+public class CircleTactic extends TileTactic {
 
     @Override
     public IntPoint getNextQuad(ArrayList<IntPoint> availableQuads, TileBehaviour context, IntPoint myQuad, IntPoint enemyQuad) {
-        return availableQuads.get(new Random().nextInt(availableQuads.size()));
+        return availableQuads.get(0);
     }
 
     @Override
     public boolean acceptAvailableQuad(TileBehaviour context, IntPoint quad, IntPoint myQuad, IntPoint enemyQuad) {
-        return true;
+
+        int diffX = enemyQuad.x - quad.x;
+        int diffY = enemyQuad.y - quad.y;
+
+        if (diffX < 0) diffX = -diffX;
+        if (diffY < 0) diffY = -diffY;
+
+
+
+        return diffX * diffX + diffY * diffY == 2;
+
     }
 
 }

@@ -20,7 +20,7 @@ public class TileBehaviour extends SimpleRobotBehaviour {
     private String trackingTankName = null;
 
     // enemy information
-    private Point enemyPosition;
+    public Point enemyPosition;
     private double enemyVelocity;
     private double enemyHeading;
     private double distanceToEnemy;
@@ -291,7 +291,7 @@ public class TileBehaviour extends SimpleRobotBehaviour {
                         continue;
                     }
 
-                    if (tileTactic.acceptAvailableQuad(this, possibleTarget)) {
+                    if (tileTactic.acceptAvailableQuad(this, possibleTarget, myQuad, enemyQuad)) {
                         possibleQuads.add(possibleTarget);
                     }
 
