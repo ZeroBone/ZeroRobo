@@ -6,11 +6,8 @@ import net.zerobone.zerorobo.utils.Point;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
-
-    private int scanDirection = 1;
+public class TileBehaviour extends SimpleRobotBehaviour {
 
     private double futureX = 0;
     private double futureY = 0;
@@ -30,8 +27,11 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     private int lostEnemyCounter;
 
-    public ZeroRoboBehaviour(ZeroRobo robo) {
+    private TileTactic tileTactic;
+
+    public TileBehaviour(ZeroRobo robo, TileTactic tileTactic) {
         super(robo);
+        this.tileTactic = tileTactic;
     }
 
     @Override
@@ -121,14 +121,6 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     private void updateRadar(ScannedRobotEvent event) {
 
-        // double turn = Utils.normalRelativeAngle(getHeading()) - getRadarHeading() + event.getBearing();
-
-        //turnRadar(turn);//+ Utils.signum(turn) * 20);
-
-        /*double turn = Utils.normalRelativeAngle(getHeading() - getRadarHeading() + event.getBearing());
-
-        turnRadar(turn);*/
-
         double turn = Utils.normalRelativeAngle(getHeading() - getRadarHeading() + event.getBearing());
 
         turnRadar(turn + Utils.signum(turn) * 20);
@@ -171,24 +163,18 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         IntPoint nextQuad;
 
-        if (!nextQuads.isEmpty())  {
-
-            for (int i = 0; i < nextQuads.size(); i++) {
-
-                if (nextQuads.get(i).equals(targetQuad)) {
-                    nextQuads.remove(i);
-                    break;
-                }
-
-            }
-
-        }
-
         if (nextQuads.isEmpty()) {
-            nextQuad = new IntPoint(0, 0);
+            // the enemy didn't leave us any choise
+            // so go and get them!!!
+
+            nextQuad = enemyQuad;
+
         }
         else {
-            nextQuad = nextQuads.get(new Random().nextInt(nextQuads.size()));
+
+            nextQuad = tileTactic.getNextQuad(nextQuads, this, myQuad, enemyQuad);
+            // nextQuad = nextQuads.get(new Random().nextInt(nextQuads.size()));
+
         }
 
         setTargetQuad(nextQuad);
@@ -207,15 +193,6 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     public void onPaint(Graphics2D g) {
 
-        if (targetPosition != null) {
-
-            g.setColor(new Color(0xff, 0, 0, 255));
-
-            // g.drawArc((int)targetPosition.getX(), (int)targetPosition.getY(), 16, 16, 0, 360);
-            g.fillRect((int)targetPosition.getX(), (int)targetPosition.getY(), 16, 16);
-
-        }
-
         g.setColor(new Color(0xff, 253, 6, 0x80));
 
         for (int y = 0; y < quadLayout.y; y++) {
@@ -223,12 +200,20 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
                 Point center = getCenterOfQuad(new IntPoint(x, y));
 
-                g.fillRect((int)center.getX(), (int)center.getY(), 16, 16);
+                g.fillArc((int)center.getX(), (int)center.getY(), 16, 16, 0, 360);
 
             }
         }
 
-        g.setColor(new Color(229, 0, 255, 0x80));
+        if (targetPosition != null) {
+
+            g.setColor(new Color(0xff, 0, 0, 255));
+
+            g.fillArc((int)targetPosition.getX(), (int)targetPosition.getY(), 16, 16, 0, 360);
+
+        }
+
+        g.setColor(new Color(255, 0, 210, 0x80));
 
         g.fillArc((int)futureX, (int)futureY, 15, 15, 0, 360);
 
@@ -247,8 +232,8 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     private IntPoint getRobotQuad(Point robotPosition) {
 
-        double cellWidth = getBattleFieldWidth() / ZeroRoboBehaviour.quadLayout.x;
-        double cellHeight = getBattleFieldHeight() / ZeroRoboBehaviour.quadLayout.y;
+        double cellWidth = getBattleFieldWidth() / TileBehaviour.quadLayout.x;
+        double cellHeight = getBattleFieldHeight() / TileBehaviour.quadLayout.y;
 
         return new IntPoint(
             (int)(robotPosition.getX() / cellWidth),
@@ -259,8 +244,8 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
     private Point getCenterOfQuad(IntPoint quad) {
 
-        int cellWidth = (int)getBattleFieldWidth() / ZeroRoboBehaviour.quadLayout.x;
-        int cellHeight = (int)getBattleFieldHeight() / ZeroRoboBehaviour.quadLayout.y;
+        int cellWidth = (int)getBattleFieldWidth() / TileBehaviour.quadLayout.x;
+        int cellHeight = (int)getBattleFieldHeight() / TileBehaviour.quadLayout.y;
 
         return new Point(
             quad.x * cellWidth + cellWidth / 2.,
@@ -286,10 +271,10 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
             if (startY < 0) startY = 0;
 
             int maxX = myQuad.x + 1;
-            if (maxX >= ZeroRoboBehaviour.quadLayout.x) maxX = ZeroRoboBehaviour.quadLayout.x - 1;
+            if (maxX >= TileBehaviour.quadLayout.x) maxX = TileBehaviour.quadLayout.x - 1;
 
             int maxY = myQuad.y + 1;
-            if (maxY >= ZeroRoboBehaviour.quadLayout.y) maxY = ZeroRoboBehaviour.quadLayout.y - 1;
+            if (maxY >= TileBehaviour.quadLayout.y) maxY = TileBehaviour.quadLayout.y - 1;
 
             // System.out.println("maxX = " + maxX + " maxY = " + maxY);
 
@@ -302,7 +287,13 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
                         continue;
                     }
 
-                    possibleQuads.add(possibleTarget);
+                    if (possibleTarget.equals(targetQuad)) {
+                        continue;
+                    }
+
+                    if (tileTactic.acceptAvailableQuad(this, possibleTarget)) {
+                        possibleQuads.add(possibleTarget);
+                    }
 
                 }
             }
@@ -355,7 +346,7 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
         double xo = x2-x1;
         double yo = y2-y1;
 
-        // double hyp = Point2D.distance(x1, y1, x2, y2);
+        // double hyp = distance(x1, y1, x2, y2);
         double hyp = Math.hypot(Math.abs(x1 - x2), Math.abs(y1 - y2));
 
         double arcSin = Math.toDegrees(Math.asin(xo / hyp));
@@ -363,11 +354,14 @@ public class ZeroRoboBehaviour extends SimpleRobotBehaviour {
 
         if (xo > 0 && yo > 0) { // both pos: lower-Left
             bearing = arcSin;
-        } else if (xo < 0 && yo > 0) { // x neg, y pos: lower-right
+        }
+        else if (xo < 0 && yo > 0) { // x neg, y pos: lower-right
             bearing = 360 + arcSin; // arcsin is negative here, actually 360 - ang
-        } else if (xo > 0 && yo < 0) { // x pos, y neg: upper-left
+        }
+        else if (xo > 0 && yo < 0) { // x pos, y neg: upper-left
             bearing = 180 - arcSin;
-        } else if (xo < 0 && yo < 0) { // both neg: upper-right
+        }
+        else if (xo < 0 && yo < 0) { // both neg: upper-right
             bearing = 180 - arcSin; // arcsin is negative here, actually 180 + ang
         }
 

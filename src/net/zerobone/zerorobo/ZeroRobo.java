@@ -1,8 +1,8 @@
 package net.zerobone.zerorobo;
 
-import net.zerobone.zerorobo.behaviour.ZeroRoboBehaviour;
+import net.zerobone.zerorobo.behaviour.TileBehaviour;
+import net.zerobone.zerorobo.behaviour.tiletactics.RandomTactic;
 import net.zerobone.zerorobo.utils.SimpleRobot;
-import robocode.ScannedRobotEvent;
 
 import java.awt.*;
 
@@ -10,7 +10,7 @@ public class ZeroRobo extends SimpleRobot {
 
     public ZeroRobo() {
 
-        behavior = new ZeroRoboBehaviour(this);
+        behaviour = new TileBehaviour(this, new RandomTactic());
 
     }
 
@@ -18,7 +18,7 @@ public class ZeroRobo extends SimpleRobot {
     public void onPaint(Graphics2D g) {
         // super.onPaint(g);
 
-        ((ZeroRoboBehaviour)behavior).onPaint(g);
+        ((TileBehaviour) behaviour).onPaint(g);
 
     }
 }

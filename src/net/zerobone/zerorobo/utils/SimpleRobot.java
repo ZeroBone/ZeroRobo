@@ -7,7 +7,7 @@ import java.util.Queue;
 /**
  * This class represents a robot that can fight in a Robocode match. Its actual
  * behavior is defined by a {@link SimpleRobotBehaviour}. Inherit from this class
- * and set the member {@link #behavior} to use it.
+ * and set the member {@link #behaviour} to use it.
  */
 public abstract class SimpleRobot extends AdvancedRobot {
 
@@ -15,7 +15,7 @@ public abstract class SimpleRobot extends AdvancedRobot {
      * The behavior for this robot. All actions performed by this robot come
      * from here.
      */
-    protected SimpleRobotBehaviour behavior = null;
+    protected SimpleRobotBehaviour behaviour = null;
 
     Queue<BulletHitBulletEvent> bulletHitBulletEventQueue = new LinkedList<>();
     Queue<BulletHitEvent> bulletHitEventQueue = new LinkedList<>();
@@ -32,11 +32,11 @@ public abstract class SimpleRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
-        behavior.start();
+        behaviour.start();
         execute();
 
         while (true) {
-            behavior.execute();
+            behaviour.execute();
             execute();
         }
 
